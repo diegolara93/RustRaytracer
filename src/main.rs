@@ -115,15 +115,17 @@ struct Image {
     pixels: Vec<Vec<Color>>,
     height: i32,
     width: i32,
+    camera_center: Vec3,
 }
 
 impl Image {
-    pub fn new(height: i32, width: i32) -> Image {
+    pub fn new(height: i32, width: i32, camera_center: Vec3) -> Image {
         let _pixels: Vec<Vec<Color>> = vec![];
             Image {
                 pixels : _pixels,
                 height, 
-                width
+                width,
+                camera_center,
             }
     }
     pub fn create_image(&mut self) {
@@ -161,10 +163,13 @@ impl Ray {
     pub fn direction(self) -> Vec3 {
         self.direction
     }
+    pub fn at(self, t: f32) -> Point3 {
+        self.origin + self.direction*t
+    }
 }
 fn main() {
-    let mut camera_center = Point3::new(0.0,0.0,0.0);
-    let mut image = Image::new(255, 255);
+    let  camera_center = Point3::new(0.0,0.0,0.0);
+    let mut image = Image::new(255, 255, camera_center);
     image.create_image();
 }
 
@@ -186,10 +191,16 @@ fn hit_sphere(center: Point3, radius: f32, r: Ray) -> f32 {
 
 fn ray_color(r: Ray) -> Color {
     let t = hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5, r);
-    todo!();
+    if t > 0.0 {
+        let N = unit_vector(r.at(t)-Vec3::new(0.0, 0.0, 0.0));
+        return Color::new(N.x()+1.0, N.y() +1.0, N.z() + 1.0) * 0.5;
+    }
+    let unit_direction = unit_vector(r.direction());
+    let a = (unit_direction.y() + 1.0) * 0.5;
+    return Color::new(1.0, 1.0, 1.0) * (1.0-a) + Color::new(0.5, 0.7, 1.0) * a;
 }
 
-fn unit_vector(v: &Vec3) -> Vec3 {
+fn unit_vector(v: Vec3) -> Vec3 {
     let l = v.len();
     Vec3 {
         x : v.x / l,
