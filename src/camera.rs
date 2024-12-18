@@ -1,6 +1,8 @@
 use crate::vec3::Vec3;
-use crate::{unit_vector, Point3};
-use crate::Ray;
+use crate::{cross, unit_vector, Point3};
+use rand::Rng;
+
+
 struct Camera {
     // Values that will have a set default value
     aspect_ratio : f32,
@@ -45,22 +47,22 @@ impl Camera {
         let  viewport_width = viewport_height * (image_width/image_height) as f32;
 
         //v u w basis vectors for the camera coords
-        let mut w = unit_vector(look_from-look_at);
-        let mut u = unit_vector(todo!("cross"));
-        let mut v : Vec3<>= todo!("cross ");
+        let  w = unit_vector(look_from-look_at);
+        let  u = unit_vector(cross(v_up, w));
+        let  v  =  cross(w, u);
 
-        let mut viewport_u = u* viewport_width;
-        let mut viewport_v = (v* -1.0)* viewport_height;
+        let  viewport_u = u* viewport_width;
+        let  viewport_v = (v* -1.0)* viewport_height;
 
-        let mut pixel_delta_u = viewport_u / image_height as f32;
-        let mut pixel_delta_v = viewport_v / image_height as f32;
+        let  pixel_delta_u = viewport_u / image_height as f32;
+        let  pixel_delta_v = viewport_v / image_height as f32;
 
-        let mut viewport_upper_left = center - (w * focus_dist) - viewport_u / 2.0 - viewport_v / 2.0;
-        let mut pixel100_loc = (pixel_delta_u+pixel_delta_v) *0.5 + viewport_upper_left ;
+        let  viewport_upper_left = center - (w * focus_dist) - viewport_u / 2.0 - viewport_v / 2.0;
+        let  pixel100_loc = (pixel_delta_u+pixel_delta_v) *0.5 + viewport_upper_left ;
 
-        let mut defocus_radius = (defocus_angle / 2.0).to_radians().tan() * focus_dist;
-        let mut defocus_disk_u = u * defocus_radius;
-        let mut defocus_disk_v = v * defocus_radius;
+        let  defocus_radius = (defocus_angle / 2.0).to_radians().tan() * focus_dist;
+        let  defocus_disk_u = u * defocus_radius;
+        let  defocus_disk_v = v * defocus_radius;
         Camera {
             aspect_ratio,
             image_width,
@@ -86,4 +88,14 @@ impl Camera {
             defocus_disk_v,
         }
     }
+
+    fn sample_square() -> Vec3 {
+        Vec3::new(
+            rand::thread_rng().gen_range(-0.5..=0.5),
+            rand::thread_rng().gen_range(-0.5..=0.5),
+            0.0,
+        )
+    }
+
+
 }

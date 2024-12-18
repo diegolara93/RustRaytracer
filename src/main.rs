@@ -105,3 +105,10 @@ fn unit_vector(v: Vec3) -> Vec3 {
          v.z() / l
     )
 }
+
+fn cross(u: Vec3, v: Vec3) -> Vec3 {
+    Vec3::new(
+        u.y() * v.z() - u.y() * v.y() , 
+        u.y() * v.x() - u.x() * v.y(), 
+        u.x() * v.y() - u.y() * v.x())
+}
