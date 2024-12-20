@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, Copy)]
-struct Interval {
+pub struct Interval {
     min: f32,
     max: f32,
 }

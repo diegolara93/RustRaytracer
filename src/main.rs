@@ -3,10 +3,12 @@ use std::fmt::Display;
 mod vec3;
 mod camera;
 mod interval;
+mod hittable;
+mod material;
 
 
 use vec3::Vec3;
-use camera::*;
+
 
 type Color = Vec3;
 struct Image {
