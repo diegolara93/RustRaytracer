@@ -2,6 +2,7 @@
 use std::fmt::Display;
 mod vec3;
 mod camera;
+mod interval;
 
 
 use vec3::Vec3;
